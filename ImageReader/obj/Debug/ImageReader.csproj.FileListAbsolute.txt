@@ -1,0 +1,9 @@
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\bin\Debug\ImageReader.exe.config
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\bin\Debug\ImageReader.exe
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\bin\Debug\ImageReader.pdb
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.csprojResolveAssemblyReference.cache
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.MainForm.resources
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.Properties.Resources.resources
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.csproj.GenerateResource.Cache
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.exe
+d:\documents\visual studio 2013\Projects\ImageReader\ImageReader\obj\Debug\ImageReader.pdb
