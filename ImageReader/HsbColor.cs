@@ -9,9 +9,9 @@ namespace ImageReader
 {
     class HsvColor
     {
-        public  int    H { get; private set; }
-        public  int    S { get;         set; }
-        public  int    V { get;         set; }
+        public  int    H; 
+        public  int    S; 
+        public  int    V; 
         public  int    num;
 
         public HsvColor() : this(0, 0, 0)

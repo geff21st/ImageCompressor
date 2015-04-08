@@ -83,7 +83,7 @@ namespace ImageReader
         {
             AvrgImage(av_dst);
         }
-        void AvrgImage(int av_dst)
+        void AvrgImage(int av_dst, int action = 0)
         {
             int h;
 
@@ -92,13 +92,22 @@ namespace ImageReader
             tmp_size         = new Size(size.Width/av_dst,size.Height/av_dst);
             tmp_size.Width  += size.Width%av_dst  == 0 ? 0 : 1;
             tmp_size.Height += size.Height%av_dst == 0 ? 0 : 1;
-            tmp_colors       = new Color[tmp_size.Width,tmp_size.Height];
+            //tmp_colors       = new Color[tmp_size.Width,tmp_size.Height];
 
             for (int y = 0; y < tmp_size.Height; y++)
             {
                 for (int x = 0; x < tmp_size.Width; x++)
                 {
-                    tmp_colors[x,y] = AvrgPixels(x, y, av_dst);
+                    switch (action)
+                    {
+                        case 0:
+                            tmp_colors[x,y] = AvrgPixels(x, y, av_dst);
+                            break;
+                        case 1:
+                            tmp_colors[x, y] = PixelsByFirst(x, y, av_dst);
+                            break;
+                    }
+                  
                     hsvColors.Add(HsvColor.FromRgb(tmp_colors[x,y]));
                     h = hsvColors.Last().H;
                     hist[h]++;
@@ -114,7 +123,7 @@ namespace ImageReader
                     hsvColors.Add(ColorByHue(i, hist[i]));
             }
 
-            
+          
 
             for (int i = 0; i < hist.Length; i++)
             {
@@ -122,24 +131,25 @@ namespace ImageReader
             }
         }
 
-        void CompressImg(int exp)
+        void CompressImg(int exp, bool key)
         {
             tmp_size = size;
             for (int y = 0; y < tmp_size.Height; y++)
             {
                 for (int x = 0; x < tmp_size.Width; x++)
                 {
-                    tmp_colors[x, y] = CompressPixel(exp, colors[x, y]);
+                    tmp_colors[x, y] = CompressPixel(exp, colors[x, y], key);
                 }
             }
         }
 
-        Color CompressPixel(int exp, Color color)
+        Color CompressPixel(int exp, Color color, bool key)
         {
+            int d = key ? exp/2 : 0;
             return Color.FromArgb(
-                color.R-color.R%exp,
-                color.G-color.G%exp,
-                color.B-color.B%exp
+                color.R - (color.R - d) % exp,
+                color.G - (color.G - d) % exp,
+                color.B - (color.B - d) % exp
                 );
         }
 
@@ -191,16 +201,6 @@ namespace ImageReader
         {
             int r = 0, g = 0, b = 0;
 
-            //for (int j = y * av_dst; j < y * av_dst + av_dst; j++)
-            //{
-            //    for (int i = x * av_dst; i < x * av_dst + av_dst; i++)
-            //    {
-            //        if (j >= size.Height || i >= size.Width) continue;
-            //        r = (r + colors[i, j].R) / 2;
-            //        g = (g + colors[i, j].G) / 2;
-            //        b = (b + colors[i, j].B) / 2;
-            //    }
-            //}
             int j = y * av_dst;
             int i = x * av_dst;
             r = colors[i, j].R;
@@ -249,7 +249,7 @@ namespace ImageReader
             SizeF size = new SizeF (list_panel.Width,
                                     (float)1.0*list_panel.Height/hsvColors.Count);
 
-            SortList();
+            //SortList();
 
             for (int i = 0; i < hsvColors.Count; i++)
             {
@@ -262,20 +262,57 @@ namespace ImageReader
             lg.Render();
         }
 
-        void SortList()
+        public void SortList(int mode = 0)
         {
-            hsvColors.Sort((a, b) => a.num.CompareTo(b.num));
+            switch (mode)
+            {
+                case 0:  hsvColors.Sort((a, b) => a.num.CompareTo(b.num));  break;
+                case 1:  hsvColors.Sort((a, b) => a.H.CompareTo(b.H));    break;
+                case 2:  hsvColors.Sort((a, b) => a.S.CompareTo(b.S));    break;
+                case 3:  hsvColors.Sort((a, b) => a.V.CompareTo(b.V));    break;
+
+                case 4:  hsvColors.Sort((a, b) =>
+                         HsvColor.ToRgb(a).R.CompareTo(HsvColor.ToRgb(b).R));  
+                         break;
+
+                case 5:  hsvColors.Sort((a, b) =>
+                         HsvColor.ToRgb(a).G.CompareTo(HsvColor.ToRgb(b).G));  
+                         break;
+
+                case 6:  hsvColors.Sort((a, b) =>
+                         HsvColor.ToRgb(a).B.CompareTo(HsvColor.ToRgb(b).B));  
+                         break;
+            }
+            
             //hsvColors.Sort((a,b) => a.H.CompareTo(b.H));
+            ShowList();
         }
 
         public void AvrgShow()
         {
             AvrgShow(2);
         }
-        public void AvrgShow(int av_dst)
+
+        public void FirstPixShow(int av_dst)
         {
-            AvrgImage(av_dst);
-            //CompressImg(av_dst);
+            
+        }
+        public void AvrgShow(int av_dst, int action=0)
+        {
+            switch (action)
+            {
+                case 0:
+                case 1:
+                    AvrgImage(av_dst, action);
+                    break;
+                case 2:
+                    CompressImg(av_dst, false);
+                    break;
+                case 3:
+                    CompressImg(av_dst, true);
+                    break;
+            }
+            
             ShowImage();
             ShowList();
         }

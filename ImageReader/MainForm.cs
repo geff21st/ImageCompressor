@@ -24,6 +24,9 @@ namespace ImageReader
         {
             img_proc = new ImgProcessor(panel, list_panel);
             av_step_bar.Maximum = img_proc.size.Width;
+            
+            imgCompressMode.SelectedIndex = 0;
+            listSortBox.SelectedIndex = 0;
         }
 
         private void panel_Click(object sender, EventArgs e)
@@ -42,12 +45,33 @@ namespace ImageReader
         private void av_step_bar_Scroll(object sender, EventArgs e)
         {
             var bar = (TrackBar) sender;
+            
             perform_averg(bar.Value);
         }
 
         void perform_averg(int av_dst)
         {
-            img_proc.AvrgShow(av_dst);
+            img_proc.AvrgShow(av_dst, imgCompressMode.SelectedIndex);
+            //switch (imgCompressMode.SelectedIndex)
+            //{
+            //    case 0:
+            //        img_proc.AvrgShow(av_dst);
+            //        break;
+            //    case 1:
+            //        img_proc
+            //        break;
+            //}
+            
+        }
+
+        private void imgCompressMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            perform_averg(av_step_bar.Value);
+        }
+
+        private void listSortBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            img_proc.SortList(listSortBox.SelectedIndex);
         }
 
     }
